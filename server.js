@@ -7,8 +7,8 @@ var app = require('http').createServer(handler),
   connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Uskudar8@',
-    database: 'idealdesk1',
+    password: '*******',
+    database: '******',
     port: 3306
   }),
   POLLING_INTERVAL = 3000,
