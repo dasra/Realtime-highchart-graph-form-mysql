@@ -1,0 +1,129 @@
+ 
+<html>
+  <head>
+  
+    <title>Push notification server streaming on a MySQL db with highchart graph</title>
+    <style>
+      dd,dt {
+        float:left;
+        margin:0;        
+        clear:both;
+            }
+      dt {
+        background:#ddd;
+      }
+      time {
+        color:gray;
+      }
+    </style>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://code.highcharts.com/highcharts.js"></script>
+          <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  </head>
+  <body>
+   
+    <div class="container-fluid">
+    <time></time>
+    <div class="row">
+<div id="container" style="min-width: 100%; height: 90%; margin: 0 auto; "></div>
+<div id="monthcontainer" style="min-width: 100%; margin: 0 auto; min-height:10%"></div>
+<time></time>
+            <script>
+            var charts;
+            charts=Highcharts.chart('container', {
+               chart: {
+                type: 'column',
+                 events: {
+                   load: function()
+                      {
+                         var series = this.series[0],
+                             series2 = this.series[1];
+                         var socket = io.connect('http://localhost:8000'); 
+                         socket.on('notification', function (data)
+                          {       
+                              var y=[]; 
+                                          
+                              $.each(data.users,function(index,user)
+                                 { 
+                                     y.push(user.Jan,user.Feb,user.Mar,user.Apr,user.May,user.Jun,user.Jul,user.Aug,user.Sep,user.Oct,user.Nov,user.Dec);                     
+                                     series.setData(y,true);              
+                                  });
+                             $('time').html('Last Update:' + data.time);
+                           });
+                        socket.on('notification1', function (data)
+                          {       
+                              var y=[]; 
+                                          
+                              $.each(data.users,function(index,user)
+                                 { 
+                                     y.push(user.Jan,user.Feb,user.Mar,user.Apr,user.May,user.Jun,user.Jul,user.Aug,user.Sep,user.Oct,user.Nov,user.Dec);                     
+                                     series2.setData(y,true);              
+                                  });                  
+                            console.log(y);
+                           });
+                         
+                       }
+                }
+    },
+    title: {
+        text: 'Monthly Average Rainfall'
+    },
+    subtitle: {
+        text: 'Source: WorldClimate.com'
+    },
+    xAxis: {
+        categories: [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Rainfall (mm)'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: '2016',
+        data: []
+    },  {
+        name: '2017',
+        data: []
+
+    }]
+});
+
+</script>
+</div>
+    </body>
+</html>  
+
+
+
